@@ -20,5 +20,5 @@ class fpga:
     self.dma.sendchannel.wait()
     self.dma.recvchannel.wait()
 
-    return self.output_buffer[0]
+    return int(self.output_buffer[0])
 

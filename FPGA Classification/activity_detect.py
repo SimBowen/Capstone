@@ -3,7 +3,7 @@ from queue import Queue
 import numpy as np
 
 class activity:
-    def __init__(self, overlay, input_shape):
+    def __init__(self):
         self.window = Queue()
         self.activity_level = 0
         self.counter = 0
@@ -27,7 +27,7 @@ class activity:
 
 
     def extract_window(self):
-        if self.window.qsize<60:
+        if self.window.qsize()<60:
             return
         if self.counter !=0:
             return
@@ -42,24 +42,28 @@ class activity:
             gyro_x = []
             gyro_y = []
             gyro_z = []
+            out = []
 
             for i in range(60):
                 temp_data = self.window.get()
-                acc_x.append(temp_data[0])
-                acc_y.append(temp_data[1])
-                acc_z.append(temp_data[2])
-                gyro_x.append(temp_data[3])
-                gyro_y.append(temp_data[4])
-                gyro_z.append(temp_data[5])
+                #acc_x.append(temp_data[0])
+                #acc_y.append(temp_data[1])
+                #acc_z.append(temp_data[2])
+                #gyro_x.append(temp_data[3])
+                #gyro_y.append(temp_data[4])
+                #gyro_z.append(temp_data[5])
+                out_format = [temp_data[0],temp_data[1],temp_data[2],temp_data[3],temp_data[4],temp_data[5]]
+                out.append(out_format)
             self.activity_level = 0
 
 
-        output = [np.array(acc_x) + np.array(acc_y) + np.array(acc_z) + np.array(gyro_x) + np.array(gyro_y) + np.array(gyro_z)]
-        return output
+            #output = [np.array(acc_x) + np.array(acc_y) + np.array(acc_z) + np.array(gyro_x) + np.array(gyro_y) + np.array(gyro_z)]
+            return out
 
 
     #If not ready and not threshold, return null. Else return flat array
     def update(self, data):
+        self.put(data)
         return self.extract_window()
 
     
