@@ -22,8 +22,3 @@ class fpga:
 
     return self.output_buffer[0]
 
-
-
-#sensors second set ready
-#AI implement own algo with actual data, see if algo actual makes sense
-

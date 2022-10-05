@@ -3,7 +3,7 @@ from overlay import fpga
 from features import extract_features
 from activity_detect import activity
 
-classifier = fpga( "/home/xilinx/mlp_test.bit",486 )
+classifier = fpga( "/home/xilinx/mlp_test.bit",432 )
 
 reading_buffer = activity()
 
