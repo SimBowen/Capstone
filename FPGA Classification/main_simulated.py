@@ -11,9 +11,12 @@ reading_buffer = activity()
 
 sim_data = pd.read_csv("/home/xilinx/x_sim.csv").to_numpy(dtype=np.float32)
 
+#Simulates loop for input of data at 20 Hz
 for i in range(len(sim_data)):
+    #Adds single reading to sliding window of 60 readings, returns None if activity is not detected and the sliding window if it is
     data = reading_buffer.update(sim_data[i])
     if data is not None:
+        #Extract features
         data = extract_features(data)
         action = classifier.classify(data)
         out = ""
