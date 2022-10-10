@@ -16,8 +16,6 @@ for i in range(len(sim_data)):
     #Adds single reading to sliding window of 60 readings, returns None if activity is not detected and the sliding window if it is
     data = reading_buffer.update(sim_data[i])
     if data is not None:
-        #Extract features
-        data = extract_features(data)
         action = classifier.classify(data)
         out = ""
         if action == 0:

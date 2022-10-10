@@ -20,6 +20,7 @@ class activity:
         self.activity_level = 0
         self.counter = 0
         self.activity_threshold = 35
+        self.window_size = 60
 
     def put(self, data):
         """Inserts data into the window.
@@ -31,7 +32,7 @@ class activity:
             data (list): readings obtained from imu of shape (6,)
 
         """
-        if self.window.qsize() == 60:
+        if self.window.qsize() == self.window_size:
             removed = self.window.get()
             if removed[1] > -0.2:
                 self.activity_level -= 1
@@ -41,7 +42,7 @@ class activity:
 
         self.window.put(data)
 
-        if self.counter == 60:
+        if self.counter == self.window_size:
             self.counter = 0
         elif self.counter > 0:
             self.counter += 1
@@ -56,7 +57,7 @@ class activity:
             list: list of the readings in window of shape (60,6)
 
         """
-        if self.window.qsize() < 60:
+        if self.window.qsize() < self.window_size:
             return
         if self.counter != 0:
             return
@@ -67,7 +68,7 @@ class activity:
 
             out = []
 
-            for i in range(60):
+            for i in range(self.window_size):
                 temp_data = self.window.get()
                 out_format = [temp_data[0], temp_data[1], temp_data[2],
                               temp_data[3], temp_data[4], temp_data[5]]

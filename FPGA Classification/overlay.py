@@ -3,6 +3,7 @@ import pandas as pd
 from pynq import allocate
 from pynq import Overlay
 import numpy as np
+from features import extract_features
 
 
 
@@ -39,8 +40,8 @@ class fpga:
             int: integer value corresponding to the respective actions
 
         """
-
-    self.input_buffer[:] = data.flatten()
+    features = extract_features(data)
+    self.input_buffer[:] = features.flatten()
     self.dma.sendchannel.transfer(self.input_buffer)
     self.dma.recvchannel.transfer(self.output_buffer)
     self.dma.sendchannel.wait()
