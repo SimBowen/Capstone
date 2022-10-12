@@ -19,7 +19,7 @@ class activity:
         self.window = Queue()
         self.activity_level = 0
         self.counter = 0
-        self.activity_threshold = 35
+        self.activity_threshold = 30
         self.window_size = 60
 
     def put(self, data):
@@ -34,10 +34,13 @@ class activity:
         """
         if self.window.qsize() == self.window_size:
             removed = self.window.get()
-            if removed[1] > -0.2:
+            if removed[0] > 1:
                 self.activity_level -= 1
-
-        if data[1] > -0.2:
+            if removed[0] > -0.5:
+                self.activity_level -= 1
+        if data[0] > 1:
+            self.activity_level += 1
+        if data[0] > -0.5:
             self.activity_level += 1
 
         self.window.put(data)
