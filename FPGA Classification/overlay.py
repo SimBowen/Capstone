@@ -4,6 +4,7 @@ from pynq import allocate
 from pynq import Overlay
 import numpy as np
 from features import extract_features
+import statistics
 
 
 
@@ -48,4 +49,11 @@ class fpga:
     self.dma.recvchannel.wait()
 
     return int(self.output_buffer[0])
+
+  def classify_v2(self, tup_5):
+    classifications = []
+    for i in range(len(tup_5)):
+      classifications.append(self.classify(tup_5[i]))
+    return statistics.mode(classifications)
+    
 

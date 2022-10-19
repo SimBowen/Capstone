@@ -16,11 +16,17 @@ class activity:
     """
 
     def __init__(self):
-        self.window = Queue()
+        self.window = []
         self.activity_level = 0
-        self.counter = 0
-        self.activity_threshold = 30
+        self.activity_threshold = 38
         self.window_size = 60
+        self.sliding_window = 80
+        self.cooldown = 0
+        self.cooldown_window = 90
+        self.trigger_counter = 0
+
+    def init_window(self):
+        self.window = []
 
     def put(self, data):
         """Inserts data into the window.
@@ -32,23 +38,35 @@ class activity:
             data (list): readings obtained from imu of shape (6,)
 
         """
-        if self.window.qsize() == self.window_size:
-            removed = self.window.get()
-            if removed[0] > 1:
-                self.activity_level -= 1
-            if removed[0] > -0.5:
-                self.activity_level -= 1
-        if data[0] > 1:
-            self.activity_level += 1
-        if data[0] > -0.5:
-            self.activity_level += 1
 
-        self.window.put(data)
+        #Take a larger window, oversample by x samples after hitting threshold. return 5 60 size windows, run classification 5 times and take the mode.
+        #Hit threshold, increment counter, wait for 5 more readings, once counter hit 5, return the last 5 60 sized windows
+        if self.cooldown>0:
+            self.cooldown -=1
+        if len(self.window) == self.sliding_window:
+            removed = self.window.pop(0)
+            if (len(self.window) > 20):
+                if removed[0] > 0.7:
+                    self.activity_level -= 1
+                if removed[0] > 0.5:
+                    self.activity_level -= 1
+                if removed[0] > 0:
+                    self.activity_level -= 2
+                if removed[0] > -0.2:
+                    self.activity_level -= 1
+        if (len(self.window) > 20):
+            if data[0] > 0.7:
+                self.activity_level += 1
+            if data[0] > 0.5:
+                self.activity_level += 1
+            if data[0] > 0:
+                self.activity_level += 2
+            if data[0] > -0.2:
+                self.activity_level += 1
 
-        if self.counter == self.window_size:
-            self.counter = 0
-        elif self.counter > 0:
-            self.counter += 1
+
+
+        self.window.append(data)
 
     def extract_window(self):
         """Extract the currently held sliding window in window.
@@ -60,25 +78,28 @@ class activity:
             list: list of the readings in window of shape (60,6)
 
         """
-        if self.window.qsize() < self.window_size:
+        
+        if len(self.window) < self.sliding_window:
             return
-        if self.counter != 0:
+        elif self.cooldown!= 0:
             return
 
         # If current tracked activity level is greater than threshold, trigger classification
-        if self.activity_level > self.activity_threshold:
-            self.counter += 1
+        
+        elif self.activity_level > self.activity_threshold and self.trigger_counter == 5:
+            self.trigger_counter = 1
+        elif 0 < self.trigger_counter < 5:
+            self.trigger_counter+=1
 
-            out = []
 
-            for i in range(self.window_size):
-                temp_data = self.window.get()
-                out_format = [temp_data[0], temp_data[1], temp_data[2],
-                              temp_data[3], temp_data[4], temp_data[5]]
-                out.append(out_format)
-            self.activity_level = 0
+        if self.trigger_counter < 5:
+            return
+        else:
+            self.cooldown = self.cooldown_window
+            #set coooldown, take 60-79, 19-79, 18-78, 17-77, 16-76
+            out = (self.window[19:], self.window[18:78], self.window[17:77], self.window[16:76], self.window[15:75] )
+            self.trigger_counter = 0
 
-            #output = [np.array(acc_x) + np.array(acc_y) + np.array(acc_z) + np.array(gyro_x) + np.array(gyro_y) + np.array(gyro_z)]
             return out
 
     # If not ready and not threshold, return null. Else return flat array
@@ -99,3 +120,6 @@ class activity:
         """
         self.put(data)
         return self.extract_window()
+
+    def a_level(self):
+        return(self.activity_level)
