@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="mlp.cpp" path="C:\Users\Sim_B\AppData\Roaming\Xilinx\Vivado\mlp.cpp"/>
+  </source>
+  <testbench>
+    <originFiles name="mlp_test.cpp" path="C:\Users\Sim_B\AppData\Roaming\Xilinx\Vivado\mlp_test.cpp"/>
+  </testbench>
+</autopilotfilemapping:AutoPilotFileMapping>

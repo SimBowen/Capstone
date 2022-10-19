@@ -18,13 +18,10 @@ class activity:
     def __init__(self):
         self.window = []
         self.activity_level = 0
-        self.activity_threshold = 38
+        self.activity_threshold = 35
         self.window_size = 60
         self.cooldown = 0
         self.cooldown_window = 90
-
-    def init_window(self):
-        self.window = []
 
     def put(self, data):
         """Inserts data into the window.
@@ -45,18 +42,18 @@ class activity:
             if removed[0] > 0.5:
                 self.activity_level -= 1
             if removed[0] > 0:
-                self.activity_level -= 2
-            if removed[0] > -0.2:
                 self.activity_level -= 1
+            if removed[0] > -0.2:
+                self.activity_level -= 2
 
         if data[0] > 0.7:
             self.activity_level += 1
         if data[0] > 0.5:
             self.activity_level += 1
         if data[0] > 0:
-            self.activity_level += 2
-        if data[0] > -0.2:
             self.activity_level += 1
+        if data[0] > -0.2:
+            self.activity_level += 2
 
 
 
@@ -76,14 +73,12 @@ class activity:
         
         if len(self.window) < self.window_size:
             return
-        elif self.cooldown!= 0:
-            return
 
         # If current tracked activity level is greater than threshold, trigger classification
         
         elif self.activity_level > self.activity_threshold:
             self.cooldown = self.cooldown_window
-            #print(self.activity_level)
+            print(self.activity_level)
 
             out = []
 

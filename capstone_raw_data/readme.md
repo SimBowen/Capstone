@@ -14,3 +14,8 @@ Files:<br />
 "x_sim.csv" - 1 sample of 60 timesteps of each action spaced evenly with non-action walking data<br />
 "x_test_real.csv" - 1836 derived samples of extracted feature data<br />
 "y_test_real.csv" - 1836 derived samples of classification data<br />
+
+0-Chester
+1-Yikai
+2-Alston
+3-Bowen

@@ -3,6 +3,8 @@ from numpy import mean, median, std, percentile, fft, abs, argmax
 import numpy as np
 
 
+#do corellation check for features
+#COllect a variety of data (must be natural)
 def Mean(data):
     """Returns the mean of a time series"""
     return data.mean()

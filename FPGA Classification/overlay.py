@@ -41,7 +41,7 @@ class fpga:
 
         """
     features = extract_features(data)
-    self.input_buffer[:] = features.flatten()
+    self.input_buffer[:] = features
     self.dma.sendchannel.transfer(self.input_buffer)
     self.dma.recvchannel.transfer(self.output_buffer)
     self.dma.sendchannel.wait()

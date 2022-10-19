@@ -16,15 +16,11 @@ class activity:
     """
 
     def __init__(self):
-        self.window = []
+        self.window = Queue()
         self.activity_level = 0
-        self.activity_threshold = 38
+        self.counter = 0
+        self.activity_threshold = 30
         self.window_size = 60
-        self.cooldown = 0
-        self.cooldown_window = 90
-
-    def init_window(self):
-        self.window = []
 
     def put(self, data):
         """Inserts data into the window.
@@ -36,32 +32,23 @@ class activity:
             data (list): readings obtained from imu of shape (6,)
 
         """
-        if self.cooldown>0:
-            self.cooldown -=1
-        if len(self.window) == self.window_size:
-            removed = self.window.pop(0)
-            if removed[0] > 0.7:
+        if self.window.qsize() == self.window_size:
+            removed = self.window.get()
+            if removed[0] > 1:
                 self.activity_level -= 1
-            if removed[0] > 0.5:
+            if removed[0] > -0.5:
                 self.activity_level -= 1
-            if removed[0] > 0:
-                self.activity_level -= 2
-            if removed[0] > -0.2:
-                self.activity_level -= 1
-
-        if data[0] > 0.7:
+        if data[0] > 1:
             self.activity_level += 1
-        if data[0] > 0.5:
-            self.activity_level += 1
-        if data[0] > 0:
-            self.activity_level += 2
-        if data[0] > -0.2:
+        if data[0] > -0.5:
             self.activity_level += 1
 
+        self.window.put(data)
 
-
-
-        self.window.append(data)
+        if self.counter == self.window_size:
+            self.counter = 0
+        elif self.counter > 0:
+            self.counter += 1
 
     def extract_window(self):
         """Extract the currently held sliding window in window.
@@ -73,22 +60,19 @@ class activity:
             list: list of the readings in window of shape (60,6)
 
         """
-        
-        if len(self.window) < self.window_size:
+        if self.window.qsize() < self.window_size:
             return
-        elif self.cooldown!= 0:
+        if self.counter != 0:
             return
 
         # If current tracked activity level is greater than threshold, trigger classification
-        
-        elif self.activity_level > self.activity_threshold:
-            self.cooldown = self.cooldown_window
-            #print(self.activity_level)
+        if self.activity_level > self.activity_threshold:
+            self.counter += 1
 
             out = []
 
             for i in range(self.window_size):
-                temp_data = self.window.pop(0)
+                temp_data = self.window.get()
                 out_format = [temp_data[0], temp_data[1], temp_data[2],
                               temp_data[3], temp_data[4], temp_data[5]]
                 out.append(out_format)
@@ -115,6 +99,3 @@ class activity:
         """
         self.put(data)
         return self.extract_window()
-
-    def a_level(self):
-        return(self.activity_level)
