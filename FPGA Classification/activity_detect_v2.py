@@ -18,7 +18,7 @@ class activity:
     def __init__(self):
         self.window = []
         self.activity_level = 0
-        self.activity_threshold = 38
+        self.activity_threshold = 50
         self.window_size = 60
         self.sliding_window = 80
         self.cooldown = 0
@@ -31,8 +31,10 @@ class activity:
     def put(self, data):
         """Inserts data into the window.
 
-        Reading data is inserted into the sliding window, removing the oldest value if size is > 60 (3s).
-        counter is incremented if window is not ready for extracted or set to 0 if it is(60 readings since last extraction).
+        Reading data is inserted into the sliding window, removing the oldest value if size is > 90 (4.5s).
+        cooldown is decremented when window is not ready for extracted or set to 60 if it is(60 readings since last extraction).
+        Activity value is increased based on x axis thresholds(vertical acceleration)
+
 
         Args:
             data (list): readings obtained from imu of shape (6,)
@@ -44,24 +46,30 @@ class activity:
         if self.cooldown>0:
             self.cooldown -=1
         if len(self.window) == self.sliding_window:
-            removed = self.window.pop(0)
-            if (len(self.window) > 20):
-                if removed[0] > 0.7:
-                    self.activity_level -= 1
-                if removed[0] > 0.5:
-                    self.activity_level -= 1
-                if removed[0] > 0:
-                    self.activity_level -= 2
-                if removed[0] > -0.2:
-                    self.activity_level -= 1
+            self.window.pop(0)
         if (len(self.window) > 20):
-            if data[0] > 0.7:
-                self.activity_level += 1
-            if data[0] > 0.5:
-                self.activity_level += 1
+
+
+            #if self.window[19][0] > 0.7:
+            #    self.activity_level -= 1
+            #if self.window[19][0] > 0.5:
+            #    self.activity_level -= 1
+            if self.window[19][0] > 0:
+                self.activity_level -= 2
+            if self.window[19][0] > -0.2:
+                self.activity_level -= 1
+            if self.window[19][0] > -0.3:
+                self.activity_level -= 1
+
+            #if data[0] > 0.7:
+            #    self.activity_level += 1
+            #if data[0] > 0.5:
+            #    self.activity_level += 1
             if data[0] > 0:
                 self.activity_level += 2
             if data[0] > -0.2:
+                self.activity_level += 1
+            if data[0] > -0.3:
                 self.activity_level += 1
 
 
@@ -86,7 +94,7 @@ class activity:
 
         # If current tracked activity level is greater than threshold, trigger classification
         
-        elif self.activity_level > self.activity_threshold and self.trigger_counter == 5:
+        elif self.activity_level > self.activity_threshold and self.trigger_counter == 0:
             self.trigger_counter = 1
         elif 0 < self.trigger_counter < 5:
             self.trigger_counter+=1
@@ -97,7 +105,10 @@ class activity:
         else:
             self.cooldown = self.cooldown_window
             #set coooldown, take 60-79, 19-79, 18-78, 17-77, 16-76
-            out = (self.window[19:], self.window[18:78], self.window[17:77], self.window[16:76], self.window[15:75] )
+
+            out = (self.window[20:], self.window[19:79], self.window[18:78], self.window[17:77], self.window[16:76] )
+            #print(len(out[0]), len(out[1]), len(out[2]), len(out[3]), len(out[4]))
+
             self.trigger_counter = 0
 
             return out
