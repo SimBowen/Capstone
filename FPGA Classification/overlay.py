@@ -3,7 +3,7 @@ import pandas as pd
 from pynq import allocate
 from pynq import Overlay
 import numpy as np
-from features import extract_features
+from features import extract_features, extract_features_v2
 import statistics
 
 
@@ -41,7 +41,11 @@ class fpga:
             int: integer value corresponding to the respective actions
 
         """
-    features = extract_features(data)
+    features = []
+    if self.input_shape == 432:
+      features = extract_features(data)
+    elif self.input_shape == 192:
+      features = extract_features_v2(data)
     self.input_buffer[:] = features
     self.dma.sendchannel.transfer(self.input_buffer)
     self.dma.recvchannel.transfer(self.output_buffer)
@@ -55,5 +59,5 @@ class fpga:
     for i in range(len(tup_5)):
       classifications.append(self.classify(tup_5[i]))
     return statistics.mode(classifications)
-    
+
 
