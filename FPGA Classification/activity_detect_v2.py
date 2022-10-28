@@ -18,9 +18,9 @@ class activity:
     def __init__(self):
         self.window = []
         self.activity_level = 0
-        self.activity_threshold = 50
+        self.activity_threshold = 55
         self.window_size = 60
-        self.sliding_window = 80
+        self.sliding_window = 65
         self.cooldown = 0
         self.cooldown_window = 90
         self.trigger_counter = 0
@@ -50,27 +50,39 @@ class activity:
         if (len(self.window) > 20):
 
 
-            #if self.window[19][0] > 0.7:
-            #    self.activity_level -= 1
-            #if self.window[19][0] > 0.5:
-            #    self.activity_level -= 1
-            if self.window[19][0] > 0:
+            if self.window[4][0] > 0.9:
+                self.activity_level -= 1
+            elif self.window[4][0] > 0.6:
+                self.activity_level -= 4
+            elif self.window[4][0] > 0.5:
                 self.activity_level -= 2
-            if self.window[19][0] > -0.2:
+            elif self.window[4][0] > 0:
+                self.activity_level -= 4
+            elif self.window[4][0] > 0:
                 self.activity_level -= 1
-            if self.window[19][0] > -0.3:
+            elif self.window[4][0] > -0.1:
+                self.activity_level -= 2
+            elif self.window[4][0] > -0.1:
                 self.activity_level -= 1
+            elif self.window[4][0] > -0.3:
+                self.activity_level -= 2
 
-            #if data[0] > 0.7:
-            #    self.activity_level += 1
-            #if data[0] > 0.5:
-            #    self.activity_level += 1
-            if data[0] > 0:
+            if data[0] > 0.9:
+                self.activity_level += 1
+            elif data[0] > 0.6:
+                self.activity_level += 4
+            elif data[0] > 0.5:
                 self.activity_level += 2
-            if data[0] > -0.2:
+            elif data[0] > 0.2:
+                self.activity_level += 4
+            elif data[0] > 0:
                 self.activity_level += 1
-            if data[0] > -0.3:
+            elif data[0] > -0.1:
+                self.activity_level += 2
+            elif data[0] > -0.1:
                 self.activity_level += 1
+            elif data[0] > -0.3:
+                self.activity_level += 2
 
 
 
@@ -103,10 +115,12 @@ class activity:
         if self.trigger_counter < 5:
             return
         else:
+
             self.cooldown = self.cooldown_window
+            
             #set coooldown, take 60-79, 19-79, 18-78, 17-77, 16-76
 
-            out = (self.window[20:], self.window[19:79], self.window[18:78], self.window[17:77], self.window[16:76] )
+            out = (self.window[4:64], self.window[3:63], self.window[2:62], self.window[1:61], self.window[:60] )
             #print(len(out[0]), len(out[1]), len(out[2]), len(out[3]), len(out[4]))
 
             self.trigger_counter = 0

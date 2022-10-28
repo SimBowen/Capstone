@@ -21,6 +21,7 @@ class fpga:
   """
   def __init__(self, overlay, input_shape):
     self.ol = Overlay(overlay)
+    self.input_shape = input_shape
     self.dma = self.ol.axi_dma_0
     self.input_buffer = allocate(shape=(input_shape,), dtype=np.float32)
     self.output_buffer = allocate(shape=(1,), dtype=np.float32)
