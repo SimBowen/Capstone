@@ -56,14 +56,12 @@ class activity:
                 self.activity_level -= 4
             elif self.window[4][0] > 0.5:
                 self.activity_level -= 2
-            elif self.window[4][0] > 0:
+            elif self.window[4][0] > 0.2:
                 self.activity_level -= 4
             elif self.window[4][0] > 0:
                 self.activity_level -= 1
             elif self.window[4][0] > -0.1:
                 self.activity_level -= 2
-            elif self.window[4][0] > -0.1:
-                self.activity_level -= 1
             elif self.window[4][0] > -0.3:
                 self.activity_level -= 2
 
@@ -79,8 +77,6 @@ class activity:
                 self.activity_level += 1
             elif data[0] > -0.1:
                 self.activity_level += 2
-            elif data[0] > -0.1:
-                self.activity_level += 1
             elif data[0] > -0.3:
                 self.activity_level += 2
 
