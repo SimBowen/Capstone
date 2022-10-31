@@ -116,7 +116,46 @@ class activity:
             
             #set coooldown, take 60-79, 19-79, 18-78, 17-77, 16-76
 
-            out = (self.window[4:64], self.window[3:63], self.window[2:62], self.window[1:61], self.window[:60] )
+            out = (self.window[5:65], self.window[4:64], self.window[3:63], self.window[2:62], self.window[1:61] )
+            #print(len(out[0]), len(out[1]), len(out[2]), len(out[3]), len(out[4]))
+
+            self.trigger_counter = 0
+
+            return out
+
+    def extract_window_2s(self):
+        """Extract the currently held sliding window in window.
+
+        window of size 60 is extracted if counter = 0 indicating more than 60 readings since last extraction.
+        Output is in the form [Acc_x, Acc_y, Acc_z, Gyro_x, Gyro_y, Gyro_z] * 60
+
+        Returns:
+            list: list of the readings in window of shape (60,6)
+
+        """
+        
+        if len(self.window) < self.sliding_window:
+            return
+        elif self.cooldown!= 0:
+            return
+
+        # If current tracked activity level is greater than threshold, trigger classification
+        
+        elif self.activity_level > self.activity_threshold and self.trigger_counter == 0:
+            self.trigger_counter = 1
+        elif 0 < self.trigger_counter < 5:
+            self.trigger_counter+=1
+
+
+        if self.trigger_counter < 5:
+            return
+        else:
+
+            self.cooldown = 45
+            
+            #set coooldown, take 60-79, 19-79, 18-78, 17-77, 16-76
+
+            out = (self.window[25:65], self.window[24:64], self.window[23:63], self.window[2:62], self.window[21:61] )
             #print(len(out[0]), len(out[1]), len(out[2]), len(out[3]), len(out[4]))
 
             self.trigger_counter = 0
