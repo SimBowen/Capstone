@@ -43,10 +43,13 @@ class fpga:
 
         """
     features = []
-    if self.input_shape == 432:
-      features = extract_features(data)
-    elif self.input_shape == 192:
-      features = extract_features_v2(data)
+    features = extract_features(data)
+    # if self.input_shape == 432:
+    #   features = extract_features(data)
+    # elif self.input_shape == 192:
+    #   features = extract_features_v2(data)
+    # elif self.input_shape == 132:
+    #   features = extract_features_v2(data)
     self.input_buffer[:] = features
     self.dma.sendchannel.transfer(self.input_buffer)
     self.dma.recvchannel.transfer(self.output_buffer)

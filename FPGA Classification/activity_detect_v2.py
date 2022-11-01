@@ -22,7 +22,7 @@ class activity:
         self.window_size = 60
         self.sliding_window = 65
         self.cooldown = 0
-        self.cooldown_window = 90
+        self.cooldown_window = 60
         self.trigger_counter = 0
 
     def init_window(self):
@@ -47,11 +47,12 @@ class activity:
             self.cooldown -=1
         if len(self.window) == self.sliding_window:
             self.window.pop(0)
-        if (len(self.window) > 20):
+        if (len(self.window) > 5):
 
 
             if self.window[4][0] > 0.9:
                 self.activity_level -= 1
+                
             elif self.window[4][0] > 0.6:
                 self.activity_level -= 4
             elif self.window[4][0] > 0.5:
@@ -79,6 +80,9 @@ class activity:
                 self.activity_level += 2
             elif data[0] > -0.3:
                 self.activity_level += 2
+
+            if self.activity_level<0:
+                print("negative")
 
 
 
@@ -116,11 +120,10 @@ class activity:
             
             #set coooldown, take 60-79, 19-79, 18-78, 17-77, 16-76
 
-            out = (self.window[5:65], self.window[4:64], self.window[3:63], self.window[2:62], self.window[1:61] )
+            out = (self.window[5:65], self.window[4:64], self.window[3:63])
             #print(len(out[0]), len(out[1]), len(out[2]), len(out[3]), len(out[4]))
 
             self.trigger_counter = 0
-
             return out
 
     def extract_window_2s(self):
