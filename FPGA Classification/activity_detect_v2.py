@@ -22,7 +22,7 @@ class activity:
         self.window_size = 60
         self.sliding_window = 65
         self.cooldown = 0
-        self.cooldown_window = 60
+        self.cooldown_window = 65
         self.trigger_counter = 0
 
     def init_window(self):
@@ -48,23 +48,6 @@ class activity:
         if len(self.window) == self.sliding_window:
             self.window.pop(0)
         if (len(self.window) > 5):
-
-
-            if self.activity_level[4][0] > 0.9:
-                self.activity_level -= 1
-            elif self.window[4][0] > 0.6:
-                self.activity_level -= 4
-            elif self.window[4][0] > 0.5:
-                self.activity_level -= 2
-            elif self.window[4][0] > 0.2:
-                self.activity_level -= 4
-            elif self.window[4][0] > 0:
-                self.activity_level -= 1
-            elif self.window[4][0] > -0.1:
-                self.activity_level -= 2
-            elif self.window[4][0] > -0.3:
-                self.activity_level -= 2
-
             if data[0] > 0.9:
                 self.activity_level += 1
             elif data[0] > 0.6:
@@ -79,6 +62,22 @@ class activity:
                 self.activity_level += 2
             elif data[0] > -0.3:
                 self.activity_level += 2
+        if (len(self.window) == self.sliding_window-1):
+            if self.window[4][0] > 0.9:
+                self.activity_level -= 1
+            elif self.window[4][0] > 0.6:
+                self.activity_level -= 4
+            elif self.window[4][0] > 0.5:
+                self.activity_level -= 2
+            elif self.window[4][0] > 0.2:
+                self.activity_level -= 4
+            elif self.window[4][0] > 0:
+                self.activity_level -= 1
+            elif self.window[4][0] > -0.1:
+                self.activity_level -= 2
+            elif self.window[4][0] > -0.3:
+                self.activity_level -= 2
+            #print(self.activity_level)
 
             if self.activity_level<0:
                 raise Exception("Activity Level Mismatch")
@@ -86,6 +85,10 @@ class activity:
 
 
         self.window.append(data)
+        if (len(self.window)>65):
+            raise Exception("Expanded window")
+
+        
 
     def extract_window(self):
         """Extract the currently held sliding window in window.
