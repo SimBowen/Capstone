@@ -18,7 +18,7 @@ class activity:
     def __init__(self):
         self.window = []
         self.activity_level = 0
-        self.activity_threshold = 50
+        self.activity_threshold = 53
         self.window_size = 60
         self.sliding_window = 65
         self.cooldown = 0
@@ -48,8 +48,8 @@ class activity:
             
         if (len(self.window) > 5):
 
-            if data[0] > 0.96:
-                self.activity_level += 3
+            if data[0] > 0.98:
+                self.activity_level += 2
             elif data[0] > 0.9:
                 self.activity_level += 1
             elif data[0] > 0.6:
@@ -65,8 +65,8 @@ class activity:
             elif data[0] > -0.3:
                 self.activity_level += 2
         if (len(self.window) == self.sliding_window):
-            if self.window[5][0] > 0.96:
-                self.activity_level -= 3
+            if self.window[5][0] > 0.98:
+                self.activity_level -= 2
             elif self.window[5][0] > 0.9:
                 self.activity_level -= 1
             elif self.window[5][0] > 0.6:
@@ -87,7 +87,7 @@ class activity:
 
             if self.activity_level<0:
                 raise Exception("Negative Activity")
-                self.reset()
+                self.activity_level = 0
                 return
 
 
