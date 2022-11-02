@@ -1,10 +1,10 @@
 
 from overlay import fpga
-from activity_detect_v2 import activity
+from activity_detect_v3 import activity
 import pandas as pd
 import numpy as np
 
-classifier = fpga( "/home/xilinx/model_v2.1.bit",192 )
+classifier = fpga( "/home/xilinx/model_v2.1.1.bit",192 )
 
 reading_buffer_1 = activity()
 reading_buffer_2 = activity()
