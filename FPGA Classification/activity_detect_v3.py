@@ -18,11 +18,11 @@ class activity:
     def __init__(self):
         self.window = []
         self.activity_level = 0
-        self.activity_threshold = 90
+        self.activity_threshold = 65
         self.window_size = 60
         self.sliding_window = 65
         self.cooldown = 0
-        self.cooldown_window = 65
+        self.cooldown_window = 80
         self.trigger_counter = 0
 
     def init_window(self):
@@ -51,53 +51,61 @@ class activity:
             if data[0] > 0.98:
                 self.activity_level += 2
             elif data[0] > 0.8:
-                self.activity_level += 1
+                self.activity_level += 4
             elif data[0] > 0.6:
-                if self.window[-1][0]>0.5:
-                    self.activity_level += 3
-                else:
-                    self.activity_level += 3
+                #if self.window[-1][0]>0.5:
+                #    self.activity_level += 4
+                #else:
+                self.activity_level += 2
             elif data[0] > 0.5:
                 self.activity_level += 3
             elif data[0] > 0.2:
                 if self.window[-1][0]>0.2:
-                    self.activity_level += 3
-                else:
                     self.activity_level += 2
+                else:
+                    self.activity_level += 1
             elif data[0] > 0:
                 self.activity_level += 2
             elif data[0] > -0.2:
-                self.activity_level += 2
-            elif data[0] > -0.3:
-                self.activity_level += 2
-            if data[0] - self.window[-1][0] < 0.1:
                 self.activity_level += 1
+            elif data[0] > -0.3:
+                self.activity_level += 1
+            if data[0] - self.window[-1][0] < 0.1  and data[0] > 0.0:
+                if data[0] > 0.8:
+                    self.activity_level += 2
+                else:
+                    self.activity_level += 4
+
 
         if (len(self.window) == self.sliding_window):
             if self.window[5][0] > 0.98:
                 self.activity_level -= 2
             elif self.window[5][0] > 0.8:
-                self.activity_level -= 1
+                self.activity_level -= 4
             elif self.window[5][0] > 0.6:
-                if self.window[4][0]>0.5:
-                    self.activity_level -= 3
-                else:
-                    self.activity_level -= 3
+                #if self.window[4][0]>0.5:
+                #    self.activity_level -= 4
+                #else:
+                self.activity_level -= 2
             elif self.window[5][0] > 0.5:
                 self.activity_level -= 3
             elif self.window[5][0] > 0.2:
                 if self.window[4][0]>0.2:
-                    self.activity_level -= 3
-                else:
                     self.activity_level -= 2
+                else:
+                    self.activity_level -= 1
             elif self.window[5][0] > 0:
                 self.activity_level -= 2
             elif self.window[5][0] > -0.2:
-                self.activity_level -= 2
-            elif self.window[5][0] > -0.3:
-                self.activity_level -= 2
-            if self.window[4][0] - self.window[5][0] < 0.1:
                 self.activity_level -= 1
+            elif self.window[5][0] > -0.3:
+                self.activity_level -= 1
+            if self.window[5][0] - self.window[4][0] < 0.1 and self.window[5][0] > 0:
+                if self.window[5][0] > 0.8:
+                    self.activity_level -= 2
+                else:
+                    self.activity_level -= 4
+
 
             
 

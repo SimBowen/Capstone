@@ -3,7 +3,7 @@ import pandas as pd
 from pynq import allocate
 from pynq import Overlay
 import numpy as np
-from features import extract_features, extract_features_v2
+from features import extract_features, extract_features_v2, extract_features_v3
 import statistics
 
 
@@ -48,6 +48,8 @@ class fpga:
       features = extract_features(data)
     elif self.input_shape == 192:
       features = extract_features_v2(data)
+    elif self.input_shape == 372:
+      features = extract_features_v3(data)
     # elif self.input_shape == 132:
     #   features = extract_features_v2(data)
     self.input_buffer[:] = features

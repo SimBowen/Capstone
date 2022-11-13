@@ -1,10 +1,11 @@
 
 from overlay import fpga
-from activity_detect_v3 import activity
+from activity_detect_v4 import activity
 import pandas as pd
 import numpy as np
+import time
 
-classifier = fpga( "/home/xilinx/model_v2.1.1.bit",192 )
+classifier = fpga( "/home/xilinx/model_v2.1.3.bit",372 )
 
 reading_buffer_1 = activity()
 reading_buffer_2 = activity()
@@ -20,6 +21,8 @@ for i in range(len(sim_data)):
     #sim_data[i] is the recieved imu reading from the respective player
     #reading_buffer_1.a_level()
     if data_1 is not None:
+        
+        start_time = time.time()
         print("Extracted line:" + str(i))
         print(temp)
         #print(np.array(data_1[0]).transpose()[0])
@@ -35,6 +38,9 @@ for i in range(len(sim_data)):
             out = "Shield"
         elif action == 4:
             out = "None"
+
+        time_taken = time.time() - start_time
+        print("%s seconds" % (time_taken))
         print("Predicted action is : " +out+"-"+ str(action))
 
 
